@@ -7,9 +7,9 @@ CLASS zcl_material_information_045 DEFINITION
     INTERFACES if_oo_adt_classrun.
     METHODS get_material_art
       IMPORTING
-        matnr               TYPE matnr
+        matnr               TYPE i_product-product
       RETURNING
-        VALUE(material_art) TYPE mtart.
+        VALUE(material_art) TYPE i_product-producttype.
   PROTECTED SECTION.
   PRIVATE SECTION.
 
@@ -21,15 +21,16 @@ CLASS zcl_material_information_045 IMPLEMENTATION.
 
 
   METHOD get_material_art.
-    DATA material TYPE mara.
+    DATA material TYPE i_product.
     DATA production_date TYPE datn.
-    DATA bool_tmp TYPE boole_d.
+    DATA bool_tmp TYPE abap_boolean .
 
-    production_date = sy-datum.
+    production_date = cl_abap_context_info=>get_system_date( ).
 
-    SELECT SINGLE mtart FROM mara INTO CORRESPONDING FIELDS OF material WHERE matnr = matnr.
-
-    MOVE material-mtart TO material_art.
+    SELECT SINGLE       FROM i_product FIELDS producttype
+                        WHERE product = @matnr INTO CORRESPONDING
+    FIELDS OF @material.
+    material_art = material-producttype.
 
   ENDMETHOD.
 
